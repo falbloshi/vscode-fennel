@@ -1,14 +1,10 @@
-# Janet language support for Visual Studio Code
+# Fennel language support for Visual Studio Code
 
 ## Features
 
 - Syntax highlighting
 - Eval expression ```alt+e```
 - Eval file ```alt+l```
-
-## Notes
-
-This extension is not published yet. To install proceed to local install section.
 
 ## Local install
 ```
@@ -34,7 +30,7 @@ Alternatively you can clone the extension right into vscode's extention director
 ```
 # Clone the extension.
 cd ~/.vscode/extensions
-git clone https://github.com/janet-lang/vscode-janet.git
+git clone https://github.com/falbloshi/vscode-fennel
 
 # Force vscode to regenerate the extensions.json file.
 mv extensions.json /tmp/ 

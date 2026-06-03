@@ -1,43 +1,67 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activate = void 0;
+exports.activate = activate;
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const vscode = require("vscode");
+const child_process_1 = require("child_process");
+const util_1 = require("util");
+const execPromise = (0, util_1.promisify)(child_process_1.exec);
 const windows = os.platform() == 'win32';
-const janetBinary = windows ? 'janet.exe' : 'janet';
-const terminalName = 'Janet REPL';
-function janetExists() {
-    return process.env['PATH'].split(path.delimiter)
-        .some((x) => fs.existsSync(path.resolve(x, janetBinary)));
+const fennelBinary = windows ? 'fennel.exe' : 'fennel';
+const terminalName = 'Fennel REPL';
+function getFennelPath() {
+    const pathEnv = process.env['PATH'] || process.env['Path'] || '';
+    for (const envPath of pathEnv.split(path.delimiter)) {
+        const absolutePath = path.resolve(envPath, fennelBinary);
+        if (fs.existsSync(absolutePath)) {
+            return absolutePath;
+        }
+    }
+    return undefined;
 }
-function newREPL() {
-    const terminal = vscode.window.createTerminal(terminalName);
-    terminal.sendText(janetBinary + ' -s', true);
-    return vscode.window.withProgress({
-        location: vscode.ProgressLocation.Notification,
-        title: "Running Janet REPL...",
-        cancellable: false
-    }, (progress, token) => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-                terminal.show();
-                thenFocusTextEditor();
-                resolve(terminal);
-            }, 2000);
-        });
+function fennelExists() {
+    return getFennelPath() !== undefined;
+}
+async function newREPL() {
+    const fennelPath = getFennelPath();
+    if (!fennelPath) {
+        throw new Error("Fennel binary not found in PATH.");
+    }
+    const terminal = vscode.window.createTerminal({
+        name: terminalName,
+        shellPath: fennelPath
     });
+    let listener;
+    const waitForREPL = new Promise((resolve) => {
+        listener = vscode.window.onDidOpenTerminal((e) => {
+            if (e === terminal) {
+                resolve();
+            }
+        });
+        setTimeout(resolve, 2000);
+    });
+    await vscode.window.withProgress({
+        location: vscode.ProgressLocation.Notification,
+        title: "Starting Fennel REPL...",
+        cancellable: false
+    }, async () => {
+        await waitForREPL;
+    });
+    listener === null || listener === void 0 ? void 0 : listener.dispose();
+    terminal.show();
+    thenFocusTextEditor();
+    return terminal;
 }
-function getREPL(show) {
+async function getREPL(show) {
     const terminal = vscode.window.terminals.find(x => x.name === terminalName);
     const terminalP = (terminal) ? Promise.resolve(terminal) : newREPL();
-    return terminalP.then(t => {
-        if (show) {
-            t.show();
-        }
-        return t;
-    });
+    const t = await terminalP;
+    if (show) {
+        t.show();
+    }
+    return t;
 }
 function sendSource(terminal, text) {
     terminal.sendText(text, true);
@@ -46,46 +70,61 @@ function thenFocusTextEditor() {
     setTimeout(() => vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup'), 250);
 }
 function activate(context) {
-    console.log('Extension "vscode-janet" is now active!');
-    if (!janetExists()) {
-        vscode.window.showErrorMessage('Can\'t find Janet language on your computer! Check your PATH variable.');
+    console.log('Extension "vscode-fennel" is now active!');
+    if (!fennelExists()) {
+        vscode.window.showErrorMessage('Can\'t find Fennel language on your computer! Check your PATH variable.');
         return;
     }
-    context.subscriptions.push(vscode.commands.registerCommand('janet.startREPL', () => {
+    context.subscriptions.push(vscode.commands.registerCommand('fennel.startREPL', () => {
         getREPL(true);
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('janet.eval', () => {
-        const editor = vscode.window.activeTextEditor;
-        if (editor == null)
-            return;
-        getREPL(true).then(terminal => {
-            function send(terminal) {
-                sendSource(terminal, editor.document.getText(editor.selection));
-                thenFocusTextEditor();
+    context.subscriptions.push(vscode.commands.registerCommand('fennel.eval', async () => {
+        try {
+            const terminal = await getREPL(true);
+            const editor = vscode.window.activeTextEditor;
+            if (!editor)
+                return;
+            if (editor.selection.isEmpty) {
+                await vscode.commands.executeCommand('editor.action.selectToBracket');
             }
-            if (editor.selection.isEmpty)
-                vscode.commands.executeCommand('editor.action.selectToBracket').then(() => send(terminal));
-            else
-                send(terminal);
-        });
+            sendSource(terminal, editor.document.getText(editor.selection));
+            thenFocusTextEditor();
+        }
+        catch (error) {
+            console.error('Repl failed to load:', error);
+            vscode.window.showErrorMessage(`Repl failed to load: ${error}`);
+        }
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('janet.evalFile', () => {
-        const editor = vscode.window.activeTextEditor;
-        if (editor == null)
-            return;
-        getREPL(true).then(terminal => {
+    context.subscriptions.push(vscode.commands.registerCommand('fennel.evalFile', async () => {
+        try {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor)
+                return;
+            const terminal = await getREPL(true);
             sendSource(terminal, editor.document.getText());
             thenFocusTextEditor();
-        });
+        }
+        catch (error) {
+            console.error('Failed to evaluate file:', error);
+            vscode.window.showErrorMessage(`Failed to evaluate file: ${error}`);
+        }
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('janet.formatFile', () => {
-        getREPL(true).then(terminal => {
-            sendSource(terminal, "(import spork/fmt) (fmt/format-file \"" +
-                vscode.window.activeTextEditor.document.uri.fsPath.replace(/\\/g, "/")
-                + "\")");
+    context.subscriptions.push(vscode.commands.registerCommand('fennel.formatFile', async () => {
+        try {
+            const editor = vscode.window.activeTextEditor;
+            if (!editor)
+                return;
+            const fnlfmtPath = path.join(context.extensionPath, 'formatters', 'fnlfmt.lua');
+            const filePath = editor.document.uri.fsPath;
+            const formatCommand = `lua "${fnlfmtPath}" --fix "${filePath}"`;
+            await editor.document.save();
+            await execPromise(formatCommand);
             thenFocusTextEditor();
-        });
+        }
+        catch (error) {
+            console.error('Failed to format file:', error);
+            vscode.window.showErrorMessage(`Failed to format file: ${error}`);
+        }
     }));
 }
-exports.activate = activate;
 //# sourceMappingURL=extension.js.map

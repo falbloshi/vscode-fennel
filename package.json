@@ -1,70 +1,67 @@
 {
-	"name": "vscode-janet",
-	"displayName": "Janet",
-	"description": "Janet language support for Visual Studio Code",
-	"icon": "images/icon.png",
-	"version": "0.0.2",
-	"publisher": "janet-lang",
-	"repository": "https://github.com/janet-lang/vscode-janet",
+	"name": "vscode-fennel",
+	"displayName": "Fennel",
+	"description": "Fennel language support for Visual Studio Code",
+	"publisher": "testing",
+	"version": "0.1.0",
+	"repository": "https://github.com/falbloshi/vscode-fennel",
 	"engines": {
-		"vscode": "^1.34.0"
+		"vscode": "^1.90.0"
 	},
 	"categories": [
 		"Programming Languages"
 	],
-	"activationEvents": [
-		"onCommand:janet.startREPL",
-		"onCommand:janet.eval",
-		"onCommand:janet.evalFile",
-		"onCommand:janet.formatFile"
-	],
 	"main": "./out/extension.js",
+	"activationEvents": [
+        "onLanguage:fennel"
+    ],
 	"contributes": {
 		"languages": [
 			{
-				"id": "janet",
+				"id": "fennel",
 				"aliases": [
-					"Janet",
-					"janet"
+					"Fennel",
+					"fnl"
 				],
 				"extensions": [
-					".janet"
+					".fnl",
+					".fennel"
 				],
-				"configuration": "./janet.configuration.json"
+				"configuration": "./fennel-configuration.json"
 			}
 		],
 		"grammars": [
 			{
-				"language": "janet",
-				"scopeName": "source.janet",
-				"path": "./syntaxes/janet.tmLanguage"
+				"language": "fennel",
+				"scopeName": "source.fnl",
+				"path": "./syntaxes/fnl.tmLanguage.json"
 			}
 		],
 		"commands": [
 			{
-				"command": "janet.startREPL",
-				"title": "Janet: Start REPL"
+				"command": "fennel.startREPL",
+				"title": "Fennel: Start REPL"
 			},
 			{
-				"command": "janet.eval",
-				"title": "Janet: Evaluate expression"
+				"command": "fennel.eval",
+				"title": "Fennel: Evaluate expression"
 			},
 			{
-				"command": "janet.evalFile",
-				"title": "Janet: Evaluate file"
+				"command": "fennel.evalFile",
+				"title": "Fennel: Evaluate file"
 			},
 			{
-				"command": "janet.formatFile",
-				"title": "Janet: Format file"
+				"command": "fennel.formatFile",
+				"title": "Fennel: Format file"
 			}
 		],
 		"keybindings": [
 			{
-				"command": "janet.eval",
+				"command": "fennel.eval",
 				"key": "alt+e"
 			},
 			{
-				"command": "janet.evalFile",
+				"command": "fennel.evalFile",
 				"key": "alt+l"
 			}
 		]
