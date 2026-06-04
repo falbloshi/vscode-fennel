@@ -49,7 +49,7 @@ bunx vsce package
 ```
 
 ### Install the extension.
-`code --install-extension vscode-fennel-0.2.1.vsix`
+`code --install-extension vscode-fennel-0.x.x.vsix`
 
 ### Debug this extension
 

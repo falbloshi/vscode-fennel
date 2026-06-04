@@ -3,7 +3,7 @@
 	"displayName": "Fennel",
 	"description": "Fennel language support for Visual Studio Code",
 	"publisher": "Faris Akherdad",
-	"version": "0.3.3",
+	"version": "0.3.4",
 	"repository": "https://github.com/falbloshi/vscode-fennel",
 	"engines": {
 		"vscode": "^1.90.0"
