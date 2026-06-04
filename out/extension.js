@@ -9,6 +9,7 @@ const vscode = require("vscode");
 const child_process_1 = require("child_process");
 const util_1 = require("util");
 const execPromise = (0, util_1.promisify)(child_process_1.exec);
+const execFilePromise = (0, util_1.promisify)(child_process_1.execFile);
 const windows = os.platform() == 'win32';
 const terminalName = 'Fennel REPL';
 function getBinaryNames() {
@@ -149,8 +150,7 @@ function activate(context) {
             try {
                 const fnlfmtPath = path.join(context.extensionPath, 'formatters', 'fnlfmt.lua');
                 const filePath = document.uri.fsPath;
-                const formatCommand = `lua "${fnlfmtPath}" "${filePath}"`;
-                const { stdout } = await execPromise(formatCommand);
+                const { stdout } = await execFilePromise('lua', [fnlfmtPath, filePath]);
                 if (stdout && stdout.trim().length > 0) {
                     const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length));
                     return [vscode.TextEdit.replace(fullRange, stdout)];

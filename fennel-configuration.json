@@ -2,7 +2,7 @@
   "comments": {
     "lineComment": ";"
   },
-  "wordPattern": "[:&|-<>-~a-zA-Z_0-9]+",
+  "wordPattern": "[a-zA-Z0-9_\\|&<>~?:!-]+",
   "brackets": [
     ["{", "}"],
     ["[", "]"],
@@ -21,8 +21,7 @@
     ["\"", "\""]
   ],
   "indentationRules": {
-  "increaseIndentPattern": "^.*[(\\[{]\\s*$",
-  "decreaseIndentPattern": "^\\s*[)\\]}]"
+    "increaseIndentPattern": "^.*(\\([a-zA-Z0-9_\\|&<>~?:!-]+\\s+.*|\\{\\s*|\\[\\s*)$",
+    "decreaseIndentPattern": "^\\s*([\\)\\]\\}])$"
   }
-  
 }

@@ -16,6 +16,9 @@
                     "include": "#raw-strings"
                 },
                 {
+                    "include": "#strings"
+                },
+                {
                     "include": "#numbers"
                 },
                 {
@@ -40,13 +43,7 @@
                     "include": "#lua"
                 },
                 {
-                    "include": "#strings"
-                },
-                {
                     "include": "#methods"
-                },
-                {
-                    "include": "#symbols"
                 },
                 {
                     "include": "#lume"
@@ -56,17 +53,20 @@
                 },
                 {
                     "include": "#shared"
+                },
+                {
+                    "include": "#symbols"
                 }
             ]
         },
         "constants": {
             "patterns": [
                 {
-                    "match": "\\bnil\\b",
+                    "match": "(?<![a-zA-Z0-9_\\-!?])nil(?![a-zA-Z0-9_\\-!?])",
                     "name": "constant.language.nil.fennel"
                 },
                 {
-                    "match": "\\b(false|true)\\b",
+                    "match": "(?<![a-zA-Z0-9_\\-!?])(false|true)(?![a-zA-Z0-9_\\-!?])",
                     "name": "constant.language.boolean.fennel"
                 }
             ]
@@ -156,23 +156,23 @@
                 },
                 {
                     "name": "keyword.special.fennel",
-                    "match": "-"
+                    "match": "(?<![a-zA-Z0-9_\\-!?])-(?![a-zA-Z0-9_\\-!?])"
                 },
                 {
                     "name": "keyword.special.fennel",
-                    "match": "not="
+                    "match": "(?<![a-zA-Z0-9_\\-!?])not=(?![a-zA-Z0-9_\\-!?])"
                 },
                 {
                     "name": "keyword.special.fennel",
-                    "match": "set-forcibly!"
+                    "match": "(?<![a-zA-Z0-9_\\-!?])set-forcibly!(?![a-zA-Z0-9_\\-!?])"
                 },
                 {
                     "name": "keyword.special.fennel",
-                    "match": "\\b(accumulate|and|band|bnot|bor|bxor|collect|comment|do|doc|doto|each|eval-compiler|faccumulate|for|global|hashfn|icollect|if|import-macros|include|lambda|length|let|local|lshift|lua|macro|macrodebug|macros|match|not=?|or|partial|pick-args|pick-values|quote|require-macros|rshift|set|tset|values|var|when|while|with-open)\\b"
+                    "match": "(?<![a-zA-Z0-9_\\-!?])(accumulate|and|band|bnot|bor|bxor|collect|comment|do|doc|doto|each|eval-compiler|faccumulate|for|global|hashfn|icollect|if|import-macros|include|lambda|length|let|local|lshift|lua|macro|macrodebug|macros|match|not=?|or|partial|pick-args|pick-values|quote|require-macros|rshift|set|tset|values|var|when|while|with-open)(?![a-zA-Z0-9_\\-!?])"
                 },
                 {
                     "name": "keyword.control.fennel",
-                    "match": "\\b(fn)\\b"
+                    "match": "(?<![a-zA-Z0-9_\\-!?])(fn)(?![a-zA-Z0-9_\\-!?])"
                 },
                 {
                     "name": "keyword.special.fennel",
@@ -188,14 +188,14 @@
             "patterns": [
                 {
                     "name": "support.function.fennel",
-                    "match": "\\b(assert|collectgarbage|dofile|error|getmetatable|ipairs|load|loadfile|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setmetatable|tonumber|tostring|type|xpcall)\\b"
+                    "match": "(?<![a-zA-Z0-9_\\-!?])(assert|collectgarbage|dofile|error|getmetatable|ipairs|load|loadfile|next|pairs|pcall|print|rawequal|rawget|rawlen|rawset|require|select|setmetatable|tonumber|tostring|type|xpcall)(?![a-zA-Z0-9_\\-!?])"
                 },
                 {
                     "name": "support.function.library.fennel",
-                    "match": "\\b(coroutine|coroutine.create|coroutine.isyieldable|coroutine.resume|coroutine.running|coroutine.status|coroutine.wrap|coroutine.yield|debug|debug.debug|debug.gethook|debug.getinfo|debug.getlocal|debug.getmetatable|debug.getregistry|debug.getupvalue|debug.getuservalue|debug.sethook|debug.setlocal|debug.setmetatable|debug.setupvalue|debug.setuservalue|debug.traceback|debug.upvalueid|debug.upvaluejoin|io|io.close|io.flush|io.input|io.lines|io.open|io.output|io.popen|io.read|io.stderr|io.stdin|io.stdout|io.tmpfile|io.type|io.write|math|math.abs|math.acos|math.asin|math.atan|math.ceil|math.cos|math.deg|math.exp|math.floor|math.fmod|math.huge|math.log|math.max|math.maxinteger|math.min|math.mininteger|math.modf|math.pi|math.rad|math.random|math.randomseed|math.sin|math.sqrt|math.tan|math.tointeger|math.type|math.ult|os|os.clock|os.date|os.difftime|os.execute|os.exit|os.getenv|os.remove|os.rename|os.setlocale|os.time|os.tmpname|package|package.config|package.cpath|package.loaded|package.loadlib|package.path|package.preload|package.searchers|package.searchpath|string|string.byte|string.char|string.dump|string.find|string.format|string.gmatch|string.gsub|string.len|string.lower|string.match|string.pack|string.packsize|string.rep|string.reverse|string.sub|string.unpack|string.upper|table|table.concat|table.insert|table.move|table.pack|table.remove|table.sort|table.unpack|utf8|utf8.char|utf8.charpattern|utf8.codepoint|utf8.codes|utf8.len|utf8.offset)\\b"
+                    "match": "(?<![a-zA-Z0-9_\\-!?])(coroutine|coroutine\\.create|coroutine\\.isyieldable|coroutine\\.resume|coroutine\\.running|coroutine\\.status|coroutine\\.wrap|coroutine\\.yield|debug|debug\\.debug|debug\\.gethook|debug\\.getinfo|debug\\.getlocal|debug\\.getmetatable|debug\\.getregistry|debug\\.getupvalue|debug\\.getuservalue|debug\\.sethook|debug\\.setlocal|debug\\.setmetatable|debug\\.setupvalue|debug\\.setuservalue|debug\\.traceback|debug\\.upvalueid|debug\\.upvaluejoin|io|io\\.close|io\\.flush|io\\.input|io\\.lines|io\\.open|io\\.output|io\\.popen|io\\.read|io\\.stderr|io\\.stdin|io\\.stdout|io\\.tmpfile|io\\.type|io\\.write|math|math\\.abs|math\\.acos|math\\.asin|math\\.atan|math\\.ceil|math\\.cos|math\\.deg|math\\.exp|math\\.floor|math\\.fmod|math\\.huge|math\\.log|math\\.max|math\\.maxinteger|math\\.min|math\\.mininteger|math\\.modf|math\\.pi|math\\.rad|math\\.random|math\\.randomseed|math\\.sin|math\\.sqrt|math\\.tan|math\\.tointeger|math\\.type|math\\.ult|os|os\\.clock|os\\.date|os\\.difftime|os\\.execute|os\\.exit|os\\.getenv|os\\.remove|os\\.rename|os\\.setlocale|os\\.time|os\\.tmpname|package|package\\.config|package\\.cpath|package\\.loaded|package\\.loadlib|package\\.path|package\\.preload|package\\.searchers|package\\.searchpath|string|string\\.byte|string\\.char|string\\.dump|string\\.find|string\\.format|string\\.gmatch|string\\.gsub|string\\.len|string\\.lower|string\\.match|string\\.pack|string\\.packsize|string\\.rep|string\\.reverse|string\\.sub|string\\.unpack|string\\.upper|table|table\\.concat|table\\.insert|table\\.move|table\\.pack|table\\.remove|table\\.sort|table\\.unpack|utf8|utf8\\.char|utf8\\.charpattern|utf8\\.codepoint|utf8\\.codes|utf8\\.len|utf8\\.offset)(?![a-zA-Z0-9_\\-!?])"
                 },
                 {
-                    "match": "\\b(_G|_VERSION)\\b",
+                    "match": "(?<![a-zA-Z0-9_\\-!?])(_G|_VERSION)(?![a-zA-Z0-9_\\-!?])",
                     "name": "constant.language.fennel"
                 }
             ]
@@ -204,7 +204,7 @@
             "patterns": [
                 {
                     "name": "support.function.library.lua",
-                    "match": "\\b(lume\\.)?(array|bounce|chain|clamp|clear|combine|cond|count|deserialize|distance|findi|first|format|hsv|identity|invert|isarray|last|lerp|match|max|min|mixin|noop|pct|pingpong|push|queue|random|randomchoice|remove|rgba|rip|round|serialize|shuffle|sign|smooth|split|step|trace|trim|uuid|weightedchoice)\\b"
+                    "match": "(?<![a-zA-Z0-9_\\-!?])(lume\\.)?(array|bounce|chain|clamp|clear|combine|cond|count|deserialize|distance|findi|first|format|hsv|identity|invert|isarray|last|lerp|match|max|min|mixin|noop|pct|pingpong|push|queue|random|randomchoice|remove|rgba|rip|round|serialize|shuffle|sign|smooth|step|trace|trim|uuid|weightedchoice)(?![a-zA-Z0-9_\\-!?])"
                 }
             ]
         },
@@ -212,7 +212,7 @@
             "patterns": [
                 {
                     "name": "support.function.library.lua",
-                    "match": "\\b(fun\\.)?(car|cdr|chain|concat|cycle|drop|drop-while|duplicate|enumerate|foldl|foldr|head|interleave|intersperse|is-null|iter|length|lines|nth|operator|partition|range|reduce|span|tail|take|take-while|tabulate|tomap|totable|tsort|unroll|wrap|zip)\\b"
+                    "match": "(?<![a-zA-Z0-9_\\-!?])(fun\\.)?(car|cdr|chain|concat|cycle|drop|drop-while|duplicate|enumerate|foldl|foldr|head|interleave|intersperse|is-null|iter|length|lines|nth|operator|partition|range|reduce|span|tail|take|take-while|tabulate|tomap|totable|tsort|unroll|wrap|zip)(?![a-zA-Z0-9_\\-!?])"
                 }
             ]
         },
@@ -220,7 +220,7 @@
             "patterns": [
                 {
                     "name": "support.function.library.lua",
-                    "match": "\\b((lume|fun)\\.)?(all|any|each|filter|find|map|slice)\\b"
+                    "match": "(?<![a-zA-Z0-9_\\-!?])((lume|fun)\\.)?(all|any|each|filter|find|map|slice)(?![a-zA-Z0-9_\\-!?])"
                 }
             ]
         },
@@ -236,7 +236,7 @@
             ]
         },
         "keywords": {
-            "match": "(?<=^|\\s|[\\(\\[\\{])(:)([a-zA-Z0-9_\\-]+)",
+            "match": "(?<=^|\\s|[\\(\\[\\{\\}?\\])])(:)([a-zA-Z0-9_\\-!?]+)",
             "captures": {
                 "1": {
                     "name": "punctuation.definition.keyword.fennel"
@@ -250,7 +250,7 @@
             "patterns": [
                 {
                     "name": "entity.name.function.method.fennel",
-                    "match": "([a-zA-Z0-9_\\-]+)(:)([a-zA-Z0-9_\\-\\?]+)",
+                    "match": "([a-zA-Z0-9_\\-!?]+)(:)([a-zA-Z0-9_\\-!?]+)",
                     "captures": {
                         "1": {
                             "name": "variable.other.object.fennel"
@@ -290,11 +290,11 @@
             "patterns": [
                 {
                     "name": "entity.name.function.symbol.fennel",
-                    "match": "\\w+(?:\\.\\w+)+"
+                    "match": "[a-zA-Z0-9_\\-!?]+(?:\\.[a-zA-Z0-9_\\-!?]+)+"
                 },
                 {
                     "name": "variable.other.fennel",
-                    "match": "\\w+"
+                    "match": "[a-zA-Z0-9_\\-!?]+"
                 }
             ]
         }

@@ -1,14 +1,14 @@
 {
 	"name": "vscode-fennel",
-	"displayName": "Fennel",
+	"displayName": "VSCode Fennel",
 	"description": "Fennel language support for Visual Studio Code",
-	"publisher": "Faris Akherdad",
-	"version": "0.3.5",
+	"publisher": "falbloshi",
+	"version": "0.3.6",
 	"repository": "https://github.com/falbloshi/vscode-fennel",
 	"engines": {
 		"vscode": "^1.90.0"
 	},
-  "icon": "images/extension-logo.png"
+  "icon": "images/extension-logo.png",
 	"categories": [
 		"Programming Languages"
 	],
