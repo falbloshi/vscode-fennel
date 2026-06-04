@@ -13,8 +13,18 @@
 	],
 	"main": "./out/extension.js",
 	"activationEvents": [
-        "onLanguage:fennel"
-    ],
+		"onLanguage:fennel"
+	],
+	"fennel.executableType": {
+		"type": "string",
+		"enum": [
+			"fennel",
+			"fenneljit"
+		],
+		"default": "fennel",
+		"description": "Choose whether to use the standard fennel repl or fenneljit repl."
+	},
+	"icon": "resources/extension-logo.png",
 	"contributes": {
 		"languages": [
 			{
@@ -27,7 +37,11 @@
 					".fnl",
 					".fennel"
 				],
-				"configuration": "./fennel-configuration.json"
+				"configuration": "./fennel-configuration.json",
+				"icon": {
+					"light": "./images/mylanguage-icon.svg",
+					"dark": "./images/mylanguage-icon.svg"
+				}
 			}
 		],
 		"grammars": [
@@ -53,6 +67,10 @@
 			{
 				"command": "fennel.formatFile",
 				"title": "Fennel: Format file"
+			},
+			{
+				"command": "fennel.selectExecutable",
+				"title": "Fennel: Select Executable Type (fennel / fenneljit)"
 			}
 		],
 		"keybindings": [

@@ -7,12 +7,21 @@ import { promisify } from 'util';
 
 const execPromise = promisify(exec);
 const windows: boolean = os.platform() == 'win32';
-const fennelBinary: string = windows ? 'fennel.exe' : 'fennel';
 const terminalName = 'Fennel REPL';
 
+function getBinaryName(): string {
+    const config = vscode.workspace.getConfiguration('fennel');
+    const type = config.get<string>('executableType', 'fennel'); // 'fennel' is the default
+    
+    if (type === 'fenneljit') {
+        return windows ? 'fenneljit.exe' : 'fenneljit';
+    }
+    return windows ? 'fennel.exe' : 'fennel';
+}
 
 function getFennelPath(): string | undefined {
 	const pathEnv = process.env['PATH'] || process.env['Path'] || '';
+	const fennelBinary = getBinaryName();
 
 	for (const envPath of pathEnv.split(path.delimiter)) {
 		const absolutePath = path.resolve(envPath, fennelBinary);
@@ -25,7 +34,7 @@ function getFennelPath(): string | undefined {
 
 function fennelExists(): boolean {
 	return getFennelPath() !== undefined;
-}	
+}
 
 async function newREPL(): Promise<vscode.Terminal> {
 	const fennelPath = getFennelPath();
@@ -38,31 +47,31 @@ async function newREPL(): Promise<vscode.Terminal> {
 		name: terminalName,
 		shellPath: fennelPath
 	});
-	
+
 	let listener: vscode.Disposable | undefined;
 
 	const waitForREPL = new Promise<void>((resolve) => {
-        listener = vscode.window.onDidOpenTerminal((e) => {
-            if (e === terminal) {
-                resolve();
-            }
-        });
-        setTimeout(resolve, 2000);
-    });
+		listener = vscode.window.onDidOpenTerminal((e) => {
+			if (e === terminal) {
+				resolve();
+			}
+		});
+		setTimeout(resolve, 2000);
+	});
 
 	await vscode.window.withProgress({
-        location: vscode.ProgressLocation.Notification,
-        title: "Starting Fennel REPL...",
-        cancellable: false
-    }, async () => {
-        await waitForREPL;
-    });
+		location: vscode.ProgressLocation.Notification,
+		title: "Starting Fennel REPL...",
+		cancellable: false
+	}, async () => {
+		await waitForREPL;
+	});
 
 	listener?.dispose();
-    terminal.show();
-    thenFocusTextEditor();
+	terminal.show();
+	thenFocusTextEditor();
 
-    return terminal;
+	return terminal;
 }
 
 async function getREPL(show: boolean): Promise<vscode.Terminal> {
@@ -85,6 +94,28 @@ function thenFocusTextEditor() {
 
 export function activate(context: vscode.ExtensionContext) {
 
+	context.subscriptions.push(vscode.commands.registerCommand(
+        'fennel.selectExecutable',
+        async () => {
+            const options = ['fennel', 'fenneljit'];
+            const selected = await vscode.window.showQuickPick(options, {
+                placeHolder: 'Select your preferred Fennel executable executable'
+            });
+
+            if (selected) {
+                // Save the configuration globally so it persists across sessions
+                await vscode.workspace.getConfiguration('fennel').update('executableType', selected, vscode.ConfigurationTarget.Global);
+                vscode.window.showInformationMessage(`Fennel executable changed to: ${selected}`);
+                
+                // If a terminal is already open, gently notify them
+                if (vscode.window.terminals.some(x => x.name === terminalName)) {
+                    vscode.window.showWarningMessage('Please close the active Fennel REPL terminal for changes to apply.');
+                }
+            }
+        }
+    ));
+
+
 	console.log('Extension "vscode-fennel" is now active!');
 
 	if (!fennelExists()) {
@@ -102,25 +133,25 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand(
 		'fennel.eval',
 		async () => {
-			
-			try { 
-			const terminal = await getREPL(true);
-			const editor = vscode.window.activeTextEditor
 
-			if (!editor) return;
+			try {
+				const terminal = await getREPL(true);
+				const editor = vscode.window.activeTextEditor
 
-			if (editor.selection.isEmpty) {
-				await vscode.commands.executeCommand('editor.action.selectToBracket')
+				if (!editor) return;
+
+				if (editor.selection.isEmpty) {
+					await vscode.commands.executeCommand('editor.action.selectToBracket')
+				}
+
+				sendSource(terminal, editor.document.getText(editor.selection));
+				thenFocusTextEditor();
+
+			} catch (error) {
+				console.error('Repl failed to load:', error)
+				vscode.window.showErrorMessage(`Repl failed to load: ${error}`);
 			}
-
-			sendSource(terminal, editor.document.getText(editor.selection));
-			thenFocusTextEditor();
-			
-	 	} catch (error) {
-			console.error('Repl failed to load:', error)
-			vscode.window.showErrorMessage(`Repl failed to load: ${error}`);
 		}
-	} 
 	));
 
 	context.subscriptions.push(vscode.commands.registerCommand(
@@ -128,14 +159,14 @@ export function activate(context: vscode.ExtensionContext) {
 		async () => {
 
 			try {
-			const editor = vscode.window.activeTextEditor;
-			if (!editor) return;
+				const editor = vscode.window.activeTextEditor;
+				if (!editor) return;
 
-			const terminal = await getREPL(true);
+				const terminal = await getREPL(true);
 
-			sendSource(terminal, editor.document.getText());
-			thenFocusTextEditor();
-	
+				sendSource(terminal, editor.document.getText());
+				thenFocusTextEditor();
+
 			} catch (error) {
 				console.error('Failed to evaluate file:', error)
 				vscode.window.showErrorMessage(`Failed to evaluate file: ${error}`);
@@ -143,26 +174,32 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	));
 
-	context.subscriptions.push(vscode.commands.registerCommand(
-    'fennel.formatFile',
-    async () => {
-        try {
-            const editor = vscode.window.activeTextEditor;
-            if (!editor) return;
-            
-            const fnlfmtPath = path.join(context.extensionPath, 'formatters', 'fnlfmt.lua');
-			const filePath = editor.document.uri.fsPath;
-			const formatCommand = `lua "${fnlfmtPath}" --fix "${filePath}"`;
+	context.subscriptions.push(
+        vscode.languages.registerDocumentFormattingEditProvider('fennel', {
+            async provideDocumentFormattingEdits(document) {
+                try {
+                    const fnlfmtPath = path.join(context.extensionPath, 'formatters', 'fnlfmt.lua');
+                    const filePath = document.uri.fsPath;
+                    const formatCommand = `lua "${fnlfmtPath}" "${filePath}"`;
 
-            await editor.document.save();
-            await execPromise(formatCommand);
-			
-			thenFocusTextEditor();
+                    const { stdout } = await execPromise(formatCommand);
 
-        } catch (error) {
-            console.error('Failed to format file:', error);
-            vscode.window.showErrorMessage(`Failed to format file: ${error}`);
-        }
-    }
-));
+                    if (stdout && stdout.trim().length > 0) {
+                        const fullRange = new vscode.Range(
+                            document.positionAt(0),
+                            document.positionAt(document.getText().length)
+                        );
+                        return [vscode.TextEdit.replace(fullRange, stdout)];
+                    }
+                    return [];
+                } catch (error) {
+                    console.error('Failed to format document:', error);
+                    vscode.window.showErrorMessage(`Fennel formatting failed: ${error}`);
+                    return [];
+                }
+            }
+        })
+    );
 }
+
+export function deactivate() {}
