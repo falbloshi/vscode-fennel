@@ -39,8 +39,8 @@
 				],
 				"configuration": "./fennel-configuration.json",
 				"icon": {
-					"light": "./images/mylanguage-icon.svg",
-					"dark": "./images/mylanguage-icon.svg"
+					"light": "./images/file-icon-dark.svg",
+					"dark": "./images/file-icon-light.svg"
 				}
 			}
 		],
