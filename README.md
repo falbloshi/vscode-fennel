@@ -8,38 +8,34 @@
 
 ## Local install
 ```
-# First, make sure you have Node.js version 14 or greater installed. 
+# First, make sure you have Node.js version 20 or greater installed. 
+# I recommend using [bun](https://bun.com/)
+
 
 # Clone the extension.
-git clone https://github.com/janet-lang/vscode-janet.git
-cd vscode-janet
+```bash
+git clone https://github.com/falbloshi/vscode-fennel
+cd vscode-fennel
+```
 
-# Install vscode-janet dependencies.
+
+# Install vscode-fennel dependencies.
+```bash
 npm install
+#alternatively
+bun install
+```
 
 # Generate the vscode extension (VSIX) file using vsce. 
+```bash
 npx vsce package
+#alternatively
+bunx vsce package
+```
 
 # Install the extension.
-code --install-extension vscode-janet-0.0.2.vsix
+`code --install-extension vscode-fennel-0.2.1.vsix`
 
-# Finally reload the vscode window (cmd + shift + P > Developer: Reload Window).
-```
-
-Alternatively you can clone the extension right into vscode's extention directory. This is easier, but can be unreliable as vscode will sometimes clean up the extension directory and remove vscode-janet.
-```
-# Clone the extension.
-cd ~/.vscode/extensions
-git clone https://github.com/falbloshi/vscode-fennel
-
-# Force vscode to regenerate the extensions.json file.
-mv extensions.json /tmp/ 
-
-# Finally reload the vscode window (cmd + shift + P > Developer: Reload Window).
-
-# If you're finding that vscode isn't loading the extension, you can force it to
-# regenerate the extensions.json file by removing ~/.vscode/extensions/extensions.json.
-```
 
 
 ## Debug this extension
@@ -48,3 +44,11 @@ mv extensions.json /tmp/
 - Run the `Run Extension` target in the Debug View in VS Code. This will:
 	- Start a task `npm: watch` to compile the code
 	- Run the extension in a new VS Code window
+
+## Credits / Third-Party Licenses
+- The main extension is based on [janet-lang:vscode-janet](https://github.com/janet-lang/vscode-janet/)
+- Some files and extensions from 
+	- Formatter from [~Technomancy:fnlfmt](https://git.sr.ht/~technomancy/fnlfmt)
+	- Configuration.json from [BetterThanTomorrow:calva](https://github.com/BetterThanTomorrow/calva)	
+	- Syntax highlight from [Kongeor:vsc-fennel](https://github.com/kongeor/vsc-fennel/tree/master/syntaxes)	
+- The extension logo is a modified asset based on the [Font Awesome](https://fontawesome.com) Fennel/Pl

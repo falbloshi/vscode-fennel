@@ -2,8 +2,8 @@
 	"name": "vscode-fennel",
 	"displayName": "Fennel",
 	"description": "Fennel language support for Visual Studio Code",
-	"publisher": "testing",
-	"version": "0.1.0",
+	"publisher": "Faris Akherdad",
+	"version": "0.1.2",
 	"repository": "https://github.com/falbloshi/vscode-fennel",
 	"engines": {
 		"vscode": "^1.90.0"
@@ -63,6 +63,10 @@
 			{
 				"command": "fennel.evalFile",
 				"key": "alt+l"
+			},
+			{
+				"command": "fennel.formatFile",
+				"key": "shift+alt+f"
 			}
 		]
 	},
