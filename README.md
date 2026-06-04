@@ -105,7 +105,7 @@ And set `%PATH%` to it.
 
 Move the `fennel` file there and keep it alongside `luajit.exe`
 
-Create `fennel.bat` (if you just want luajit to be your main interpreter) or `fenneljit.bat` (Same naming convention as the Linux community binaries, and if you want to use `fennel` through Lua and want the option to run via LuaJIT as well)
+Create `fennel.bat` (if you just want LuaJIT to be your main interpreter) or `fenneljit.bat` (Same naming convention as the Linux community binaries, and if you want to use `fennel` through Lua and want the option to run via LuaJIT as well)
 
 And add to it
 

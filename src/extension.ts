@@ -9,27 +9,38 @@ const execPromise = promisify(exec);
 const windows: boolean = os.platform() == 'win32';
 const terminalName = 'Fennel REPL';
 
-function getBinaryName(): string {
-    const config = vscode.workspace.getConfiguration('fennel');
-    const type = config.get<string>('executableType', 'fennel'); // 'fennel' is the default
-    
-    if (type === 'fenneljit') {
-        return windows ? 'fenneljit.exe' : 'fenneljit';
+function getBinaryNames(): string[] {
+    let type = 'fennel';
+    try {
+        const config = vscode.workspace.getConfiguration('fennel');
+        if (config) {
+            type = config.get<string>('executableType', 'fennel');
+        }
+    } catch (e) {
+        console.error("Configuration framework failed to initialize:", e);
     }
-    return windows ? 'fennel.exe' : 'fennel';
+    
+    const baseName = type === 'fenneljit' ? 'fenneljit' : 'fennel';
+
+    if (windows) {
+        return [`${baseName}.exe`, baseName, `${baseName}.bat`, `${baseName}.cmd`];
+    }
+    return [baseName];
 }
 
 function getFennelPath(): string | undefined {
 	const pathEnv = process.env['PATH'] || process.env['Path'] || '';
-	const fennelBinary = getBinaryName();
+	const binaryCandidates = getBinaryNames();
 
-	for (const envPath of pathEnv.split(path.delimiter)) {
-		const absolutePath = path.resolve(envPath, fennelBinary);
-		if (fs.existsSync(absolutePath)) {
-			return absolutePath;
-		}
-	}
-	return undefined;
+    for (const envPath of pathEnv.split(path.delimiter)) {
+        for (const binary of binaryCandidates) {
+            const absolutePath = path.resolve(envPath, binary);
+            if (fs.existsSync(absolutePath)) {
+                return absolutePath;
+            }
+        }
+    }
+    return undefined;
 }
 
 function fennelExists(): boolean {

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = activate;
+exports.deactivate = deactivate;
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
@@ -9,14 +10,33 @@ const child_process_1 = require("child_process");
 const util_1 = require("util");
 const execPromise = (0, util_1.promisify)(child_process_1.exec);
 const windows = os.platform() == 'win32';
-const fennelBinary = windows ? 'fennel.exe' : 'fennel';
 const terminalName = 'Fennel REPL';
+function getBinaryNames() {
+    let type = 'fennel';
+    try {
+        const config = vscode.workspace.getConfiguration('fennel');
+        if (config) {
+            type = config.get('executableType', 'fennel');
+        }
+    }
+    catch (e) {
+        console.error("Configuration framework failed to initialize:", e);
+    }
+    const baseName = type === 'fenneljit' ? 'fenneljit' : 'fennel';
+    if (windows) {
+        return [`${baseName}.exe`, baseName, `${baseName}.bat`, `${baseName}.cmd`];
+    }
+    return [baseName];
+}
 function getFennelPath() {
     const pathEnv = process.env['PATH'] || process.env['Path'] || '';
+    const binaryCandidates = getBinaryNames();
     for (const envPath of pathEnv.split(path.delimiter)) {
-        const absolutePath = path.resolve(envPath, fennelBinary);
-        if (fs.existsSync(absolutePath)) {
-            return absolutePath;
+        for (const binary of binaryCandidates) {
+            const absolutePath = path.resolve(envPath, binary);
+            if (fs.existsSync(absolutePath)) {
+                return absolutePath;
+            }
         }
     }
     return undefined;
@@ -70,6 +90,21 @@ function thenFocusTextEditor() {
     setTimeout(() => vscode.commands.executeCommand('workbench.action.focusActiveEditorGroup'), 250);
 }
 function activate(context) {
+    context.subscriptions.push(vscode.commands.registerCommand('fennel.selectExecutable', async () => {
+        const options = ['fennel', 'fenneljit'];
+        const selected = await vscode.window.showQuickPick(options, {
+            placeHolder: 'Select your preferred Fennel executable executable'
+        });
+        if (selected) {
+            // Save the configuration globally so it persists across sessions
+            await vscode.workspace.getConfiguration('fennel').update('executableType', selected, vscode.ConfigurationTarget.Global);
+            vscode.window.showInformationMessage(`Fennel executable changed to: ${selected}`);
+            // If a terminal is already open, gently notify them
+            if (vscode.window.terminals.some(x => x.name === terminalName)) {
+                vscode.window.showWarningMessage('Please close the active Fennel REPL terminal for changes to apply.');
+            }
+        }
+    }));
     console.log('Extension "vscode-fennel" is now active!');
     if (!fennelExists()) {
         vscode.window.showErrorMessage('Can\'t find Fennel language on your computer! Check your PATH variable.');
@@ -109,22 +144,26 @@ function activate(context) {
             vscode.window.showErrorMessage(`Failed to evaluate file: ${error}`);
         }
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('fennel.formatFile', async () => {
-        try {
-            const editor = vscode.window.activeTextEditor;
-            if (!editor)
-                return;
-            const fnlfmtPath = path.join(context.extensionPath, 'formatters', 'fnlfmt.lua');
-            const filePath = editor.document.uri.fsPath;
-            const formatCommand = `lua "${fnlfmtPath}" --fix "${filePath}"`;
-            await editor.document.save();
-            await execPromise(formatCommand);
-            thenFocusTextEditor();
-        }
-        catch (error) {
-            console.error('Failed to format file:', error);
-            vscode.window.showErrorMessage(`Failed to format file: ${error}`);
+    context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider('fennel', {
+        async provideDocumentFormattingEdits(document) {
+            try {
+                const fnlfmtPath = path.join(context.extensionPath, 'formatters', 'fnlfmt.lua');
+                const filePath = document.uri.fsPath;
+                const formatCommand = `lua "${fnlfmtPath}" "${filePath}"`;
+                const { stdout } = await execPromise(formatCommand);
+                if (stdout && stdout.trim().length > 0) {
+                    const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length));
+                    return [vscode.TextEdit.replace(fullRange, stdout)];
+                }
+                return [];
+            }
+            catch (error) {
+                console.error('Failed to format document:', error);
+                vscode.window.showErrorMessage(`Fennel formatting failed: ${error}`);
+                return [];
+            }
         }
     }));
 }
+function deactivate() { }
 //# sourceMappingURL=extension.js.map
