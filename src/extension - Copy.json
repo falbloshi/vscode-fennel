@@ -2,11 +2,10 @@ import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { exec, execFile } from 'child_process';
+import { exec } from 'child_process';
 import { promisify } from 'util';
 
 const execPromise = promisify(exec);
-const execFilePromise = promisify(execFile);
 const windows: boolean = os.platform() == 'win32';
 const terminalName = 'Fennel REPL';
 
@@ -192,8 +191,9 @@ export function activate(context: vscode.ExtensionContext) {
                 try {
                     const fnlfmtPath = path.join(context.extensionPath, 'formatters', 'fnlfmt.lua');
                     const filePath = document.uri.fsPath;
+                    const formatCommand = `lua "${fnlfmtPath}" "${filePath}"`;
 
-					const { stdout } = await execFilePromise('lua', [fnlfmtPath, filePath]);
+                    const { stdout } = await execPromise(formatCommand);
 
                     if (stdout && stdout.trim().length > 0) {
                         const fullRange = new vscode.Range(

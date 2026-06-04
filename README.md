@@ -9,7 +9,7 @@
 
 ## Features
 
-- Syntax highlighting
+- Syntax highlighting (supports Lume and Luafun)
 - Inbuilt formatter
 - Eval expression ```alt+e```
 - Eval file ```alt+l```
