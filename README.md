@@ -6,6 +6,7 @@
 - [Installation](#local-install)
 - [Windows Fennel Installation](#notes-on-windows)
 - [Credits](#credits--third-party-licenses)
+- [Wishlist](#wishlist)
 
 ## Features
 
@@ -181,3 +182,10 @@ If you see the `table: 0000` part, then the library is correctly loaded.
 	- Configuration.json from [BetterThanTomorrow:calva](https://github.com/BetterThanTomorrow/calva)	
 	- Syntax highlighting from [Kongeor:vsc-fennel](https://github.com/kongeor/vsc-fennel/tree/master/syntaxes)	
 - The extension logo is a modified asset based on the [Font Awesome](https://fontawesome.com)
+
+## Wishlist
+Would love to add the following (if you wish to contribute or give an idea):
+
+- Autoformatter `onType` edits (ala Conjure)
+- REPL text document window (ala Calva) 
+
