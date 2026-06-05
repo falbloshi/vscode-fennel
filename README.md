@@ -64,7 +64,7 @@ There is only one configuration:
 ``` json
 "configurationDefaults": {
 			"[fennel]": {
-				"editor.formatOnSave": false,
+				"editor.formatOnSave": true,
 ```
 
 Turn to true if you want to format on save.
