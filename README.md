@@ -67,7 +67,7 @@ There is only one configuration:
 				"editor.formatOnSave": true,
 ```
 
-Turn to true if you want to format on save.
+Turn to false if you do not want to format on save.
 
 
 ## Notes on Windows
@@ -167,7 +167,7 @@ Invoke `lua` from powershell/cmd
 
 ```lua
 Lua 5.4.6  Copyright (C) 1994-2023 Lua.org, PUC-Rio
-> require("fennel")
+> require("fennel") ; invoke this command
 
 table: 00000XXXXXX C:\Users\%USERNAME%\AppData\Roaming\luarocks\share\lua\5.4\fennel.lua
 ```
@@ -177,7 +177,7 @@ If you see the `table: 0000` part, then the library is correctly loaded.
 ## Credits / Third-Party Licenses
 - The main extension is based on [janet-lang:vscode-janet](https://github.com/janet-lang/vscode-janet/)
 - Some files and extensions from: 
-	- Formatter (from the developer of Fennel itself) from [~Technomancy:fnlfmt](https://git.sr.ht/~technomancy/fnlfmt)
+	- Formatter (from the current developer of Fennel) from [~Technomancy:fnlfmt](https://git.sr.ht/~technomancy/fnlfmt)
 	- Configuration.json from [BetterThanTomorrow:calva](https://github.com/BetterThanTomorrow/calva)	
-	- Syntax highlight from [Kongeor:vsc-fennel](https://github.com/kongeor/vsc-fennel/tree/master/syntaxes)	
+	- Syntax highlighting from [Kongeor:vsc-fennel](https://github.com/kongeor/vsc-fennel/tree/master/syntaxes)	
 - The extension logo is a modified asset based on the [Font Awesome](https://fontawesome.com)
