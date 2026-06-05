@@ -108,6 +108,11 @@ For either methods, to test installation, open a new powershell/cmd session and 
 
 ```bash
 fennel --version
+```
+
+Should receive 
+
+```bash
 Fennel 1.6.1 on PUC Lua 5.1
 ```
 
