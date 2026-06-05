@@ -165,6 +165,8 @@ function activate(context) {
             await vscode.commands.executeCommand('editor.action.selectToBracket');
         }
         sendSource(terminal, editor.document.getText(editor.selection));
+        const endPosition = editor.selection.end;
+        editor.selection = new vscode.Selection(endPosition, endPosition);
         thenFocusTextEditor();
     }));
     context.subscriptions.push(vscode.commands.registerCommand('fennel.evalFile', async () => {
@@ -173,6 +175,8 @@ function activate(context) {
             return;
         const terminal = await getREPL(true);
         sendSource(terminal, editor.document.getText());
+        const endPosition = editor.selection.end;
+        editor.selection = new vscode.Selection(endPosition, endPosition);
         thenFocusTextEditor();
     }));
     context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider('fennel', {

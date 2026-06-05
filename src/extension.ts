@@ -202,6 +202,10 @@ export function activate(context: vscode.ExtensionContext) {
             }
 
             sendSource(terminal, editor.document.getText(editor.selection));
+
+            const endPosition = editor.selection.end;
+            editor.selection = new vscode.Selection(endPosition, endPosition);
+
             thenFocusTextEditor();
         }
     ));
@@ -214,6 +218,9 @@ export function activate(context: vscode.ExtensionContext) {
 
             const terminal = await getREPL(true);
             sendSource(terminal, editor.document.getText());
+
+            const endPosition = editor.selection.end;
+            editor.selection = new vscode.Selection(endPosition, endPosition);
             thenFocusTextEditor();
         }
     ));
