@@ -58,16 +58,27 @@ bunx vsce package
 	- Start a task `npm: watch` to compile the code
 	- Run the extension in a new VS Code window
 
+### Configuration 
+
+There is only one configuration:
+``` json
+"configurationDefaults": {
+			"[fennel]": {
+				"editor.formatOnSave": false,
+```
+
+Turn to true if you want to format on save.
+
 
 ## Notes on Windows
-Since some native Lua modules (often installed via LuaRocks) use POSIX-specific code and don't compile on Windows, and there's no official `fennel.exe` available via Scoop or Winget yet, here's how to set up Fennel on Windows manually. 
+Since some native Lua modules (often installed via LuaRocks) use POSIX-specific code and don't compile on Windows, and there's no official `fennel.exe` available via Scoop, Chocolatey or Winget yet, here's how to set up Fennel on Windows manually. 
 
-> **Note:** Fennel has two types of standalone loose script files. One that is an embed which you use as a library, or inject into your lua files through a runner script([see the guide](https://fennel-lang.org/setup#embedding-the-fennel-compiler-in-a-lua-application)), and one which is actually the interpreter with the REPL, which can compile .fnl into .lua. And to tell which is which, the interpreter has a `#!/usr/bin/env lua` on top of the file. You need **BOTH** to use the REPL and the formatter.
+> **Note:** Fennel has two types of standalone loose script files. One that is an embed which you use as a library, or inject into your lua files through a runner script([see the guide](https://fennel-lang.org/setup#embedding-the-fennel-compiler-in-a-lua-application)), and one which is actually the interpreter with the REPL, which can compile .fnl into .lua. And to tell which is which, the interpreter has a `#!/usr/bin/env lua` on top of the file. 
 
 ### The REPL
-Two ways you can do this. Get the standalone executable from the [downloads page](https://fennel-lang.org/downloads/) with the `.exe `extension. Or get the interpreter script, the one without any extensions, e.g `fennel-1.6.1`. 
+Two ways you can do this. Get the standalone executable from the [downloads page](https://fennel-lang.org/downloads/) with the `.exe` extension. Or get the interpreter script, the one without any extensions, e.g `fennel-1.6.1`. 
 
-Best if you remove the version number and keep it as `fennel.exe` or `fennel` without the version number.
+Best if you remove the version number for either, and keep it as `fennel.exe` or `fennel` without the version number.
 
 #### Executable
 
@@ -78,11 +89,13 @@ And drop `fennel.exe` there, and add to `%PATH%`
 
 #### PUC Lua w/ Standalone Script
 
-If you have the standalone interpreter `fennel`	
+If you have the standalone interpreter `fennel`	script.
 
-Same thing, drop it in and add to `%PATH%`
+Same thing, drop it in here: 
 
 `C:\Users\%USERNAME%\Appdata\Local\fennel`
+
+And add to `%PATH%`
 
 Create `fennel.bat` script and add to it
 
@@ -91,13 +104,16 @@ Create `fennel.bat` script and add to it
 lua.exe "%~dp0fennel" %*
 ```
 
-For either methods, to test installation, open a new powershell/cmd and type
+For either methods, to test installation, open a new powershell/cmd session and type
 
-`fennel --version`
+```bash
+fennel --version
+Fennel 1.6.1 on PUC Lua 5.1
+```
 
-#### Luajit
+#### LuaJIT
 
-If you have compiled Luajit and have put it somewhere like 
+If you have compiled LuaJITand have put it somewhere like 
 
 `C:\Users\%USERNAME%\Appdata\Local\luajit`
 
@@ -114,13 +130,13 @@ And add to it
 luajit.exe "%~dp0fennel.lua" %*
 ```
 
-You can invoke fennel `fenneljit` like the compiled executable and through luajit. You should see:
+You can invoke fennel `fenneljit` like a compiled executable and through LuaJIT. You should see:
 
 `Welcome to Fennel 1.6.1 on LuaJIT 2.1.1780076327 Windows/x64!`
 
 ### The Library
 
-The built-in formatter requires the Fennel library (`fennel.lua`). Download `fennel-1.6.1.lua` from the [downloads page](https://fennel-lang.org/downloads/), rename it to `fennel.lua`, and place it in your Lua module path.
+Many programs made for Fennel requires the Fennel library (`fennel.lua`). Download `fennel-1.6.1.lua` from the [downloads page](https://fennel-lang.org/downloads/), rename it to `fennel.lua`, and place it in your Lua module path.
 
 ### Vanilla Path
 
@@ -147,10 +163,7 @@ Invoke `lua` from powershell/cmd
 ```lua
 Lua 5.4.6  Copyright (C) 1994-2023 Lua.org, PUC-Rio
 > require("fennel")
-```
 
-If you see
-```lua
 table: 00000XXXXXX C:\Users\%USERNAME%\AppData\Roaming\luarocks\share\lua\5.4\fennel.lua
 ```
 
@@ -159,7 +172,7 @@ If you see the `table: 0000` part, then the library is correctly loaded.
 ## Credits / Third-Party Licenses
 - The main extension is based on [janet-lang:vscode-janet](https://github.com/janet-lang/vscode-janet/)
 - Some files and extensions from: 
-	- Formatter from [~Technomancy:fnlfmt](https://git.sr.ht/~technomancy/fnlfmt)
+	- Formatter (from the developer of Fennel itself) from [~Technomancy:fnlfmt](https://git.sr.ht/~technomancy/fnlfmt)
 	- Configuration.json from [BetterThanTomorrow:calva](https://github.com/BetterThanTomorrow/calva)	
 	- Syntax highlight from [Kongeor:vsc-fennel](https://github.com/kongeor/vsc-fennel/tree/master/syntaxes)	
 - The extension logo is a modified asset based on the [Font Awesome](https://fontawesome.com)

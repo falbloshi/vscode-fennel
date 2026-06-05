@@ -3,19 +3,17 @@
 	"displayName": "VSCode Fennel",
 	"description": "Fennel language support for Visual Studio Code",
 	"publisher": "falbloshi",
-	"version": "0.3.6",
+	"version": "0.3.8",
 	"repository": "https://github.com/falbloshi/vscode-fennel",
 	"engines": {
 		"vscode": "^1.90.0"
 	},
-  "icon": "images/extension-logo.png",
+	"icon": "images/extension-logo.png",
 	"categories": [
-		"Programming Languages"
+		"Programming Languages",
+		"Formatters"
 	],
 	"main": "./out/extension.js",
-	"activationEvents": [
-		"onLanguage:fennel"
-	],
 	"contributes": {
 		"languages": [
 			{
@@ -56,10 +54,6 @@
 				"title": "Fennel: Evaluate file"
 			},
 			{
-				"command": "fennel.formatFile",
-				"title": "Fennel: Format file"
-			},
-			{
 				"command": "fennel.selectExecutable",
 				"title": "Fennel: Select Executable Type (fennel / fenneljit)"
 			}
@@ -88,13 +82,20 @@
 					"description": "Choose whether to use the standard fennel repl or fenneljit repl."
 				}
 			}
+		},
+		"configurationDefaults": {
+			"[fennel]": {
+				"editor.formatOnSave": true,
+				"editor.defaultFormatter": "falbloshi.vscode-fennel"
+			}
 		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"lint": "eslint . --ext .ts,.tsx",
-		"watch": "tsc -watch -p ./"
+		"watch": "tsc -watch -p ./",
+		"package": "vsce package"
 	},
 	"devDependencies": {
 		"@types/node": "^20.0.0",
@@ -102,7 +103,10 @@
 		"@typescript-eslint/eslint-plugin": "^8.0.0",
 		"@typescript-eslint/parser": "8.0.0",
 		"eslint": "^9.0.0",
-		"typescript": "^5.8.0"
+		"typescript": "^5.8.0",
+		"@vscode/vsce": "^2.15.0"
+	},
+	"dependencies": {
+		"bun": "^1.3.14"
 	}
 }
-
