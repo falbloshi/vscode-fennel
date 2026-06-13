@@ -119,7 +119,7 @@ Fennel 1.6.1 on PUC Lua 5.1
 
 #### LuaJIT
 
-If you have compiled LuaJITand have put it somewhere like 
+If you have compiled LuaJIT and have put it somewhere like 
 
 `C:\Users\%USERNAME%\Appdata\Local\luajit`
 
