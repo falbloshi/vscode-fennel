@@ -168,7 +168,7 @@
                 },
                 {
                     "name": "keyword.special.fennel",
-                    "match": "(?<![a-zA-Z0-9_\\-!?])(accumulate|and|band|bnot|bor|bxor|collect|comment|do|doc|doto|each|eval-compiler|faccumulate|for|global|hashfn|icollect|if|import-macros|include|lambda|length|let|local|lshift|lua|macro|macrodebug|macros|match|not=?|or|partial|pick-args|pick-values|quote|require-macros|rshift|set|tset|values|var|when|while|with-open)(?![a-zA-Z0-9_\\-!?])"
+                    "match": "(?<![a-zA-Z0-9_\\-!?])(accumulate|and|band|bnot|bor|bxor|case|collect|comment|do|doc|doto|each|eval-compiler|faccumulate|for|global|hashfn|icollect|if|import-macros|include|lambda|length|let|local|lshift|lua|macro|macrodebug|macros|match|not=?|or|partial|pick-args|pick-values|quote|require-macros|rshift|set|tset|values|var|when|while|with-open)(?![a-zA-Z0-9_\\-!?])"
                 },
                 {
                     "name": "keyword.control.fennel",
