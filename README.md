@@ -138,7 +138,7 @@ luajit.exe "%~dp0fennel.lua" %*
 
 You can invoke fennel `fenneljit` like a compiled executable and through LuaJIT. You should see:
 
-`Welcome to Fennel 1.6.1 on LuaJIT 2.1.1780076327 Windows/x64!`
+`Welcome to Fennel 1.6.1 on LuaJIT 2.1.1xxxxxxxxx Windows/x64!`
 
 ### The Library
 
